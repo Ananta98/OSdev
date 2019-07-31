@@ -8,7 +8,7 @@ ARCH_OBJS = $(patsubst %.s,%.o,$(wildcard arch/x86/*.c))
 DRIVER_OBJS = $(patsubst %.c,%.o,$(wildcard driver/*.c))
 KERNEL_OBJS = $(patsubst %.c,%.o,$(wildcard kernel/*.c))
 ASM_OBJS = $(patsubst %.s,%.o,$(wildcard arch/x86/*.s))
-ASM_OBJS += $(patsubst %.c,%.o,$(wildcard kernel/*.s))
+ASM_OBJS += $(patsubst %.s,%.o,$(wildcard kernel/*.s))
 LIBC_OBJS = $(patsubst %.c,%.o,$(wildcard libc/*.c))
 INCLUDE_ASMOBJS = $(patsubst %.s,%.o,$(wildcard include/*.s))
 CPU_OBJS = $(patsubst %.c,%.o,$(wildcard kernel/cpu/*.c))
@@ -35,6 +35,9 @@ driver/%.o : driver/%.c
 
 kernel/cpu/%.o : kernel/cpu/%.c
 	$(GCC) -c $< -o $@ $(GCCPARAMS)
+
+kernel/%.o : kernel/%.s
+	$(AS) $< -o $@
 
 myos.bin: arch/x86/linker.ld  $(KERNEL_OBJS)
 	$(GCC) -T $< -o $@ $(GCCLINKING) $(KERNEL_OBJS)  -lgcc
